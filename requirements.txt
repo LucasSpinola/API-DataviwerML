@@ -1,0 +1,7 @@
+pandas
+fastapi
+gunicorn
+numpy
+python-decouple
+scikit-learn
+pydantic_settings
