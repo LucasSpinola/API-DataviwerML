@@ -15,7 +15,7 @@ async def train_model(file: UploadFile):
     global modelo
 
     if not file.filename.endswith('.csv'):
-        raise HTTPException(status_code=400, detail="Arquivo deve ser um CSV")
+        raise HTTPException(status_code=415, detail="O arquivo deve ser um CSV")
 
     try:
         df = pd.read_csv(file.file)
@@ -26,7 +26,7 @@ async def train_model(file: UploadFile):
                         'QuestionsList_list03', 'submitted_list_final01', 'submitted_list_final02', 
                         'submitted_list_final03']
     if df.empty or not all(col in df.columns for col in expected_columns):
-        raise HTTPException(status_code=400, detail="Arquivo CSV não contém as colunas esperadas ou está vazio")
+        raise HTTPException(status_code=422, detail="Arquivo CSV não contém as colunas esperadas ou está vazio")
 
     df = df.dropna(axis=0, how='any')
 
@@ -75,7 +75,7 @@ async def predict(file: UploadFile):
         raise HTTPException(status_code=400, detail="O modelo ainda não foi treinado.")
 
     if not file.filename.endswith('.csv'):
-        raise HTTPException(status_code=400, detail="Arquivo deve ser um CSV")
+        raise HTTPException(status_code=415, detail="O arquivo deve ser um CSV")
 
     try:
         df = pd.read_csv(file.file)
@@ -83,7 +83,7 @@ async def predict(file: UploadFile):
         raise HTTPException(status_code=500, detail=f"Erro ao ler o arquivo CSV: {str(e)}")
 
     if 'enrollment' not in df.columns:
-        raise HTTPException(status_code=400, detail="Arquivo CSV não contém a coluna 'enrollment'")
+        raise HTTPException(status_code=422, detail="Arquivo CSV não contém a coluna 'enrollment'")
 
     df = df.fillna(0)
     
